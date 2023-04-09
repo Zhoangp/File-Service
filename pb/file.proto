@@ -1,0 +1,22 @@
+syntax = "proto3";
+package pb;
+option go_package = "github.com/Zhoangp/User-Service/pb";
+
+service FileService{
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+}
+message UploadFileRequest {
+  string fileName = 1;
+  int64 size = 2;
+  bytes content = 3;
+  string folder = 4;
+}
+message UploadFileResponse {
+  string url = 1;
+  ErrorResponse error = 2;
+}
+message ErrorResponse {
+  int64 code = 1;
+  string message = 2;
+
+}
