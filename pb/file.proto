@@ -1,5 +1,5 @@
 syntax = "proto3";
-package pb;
+package file;
 option go_package = "github.com/Zhoangp/User-Service/pb";
 
 service FileService{

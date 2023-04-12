@@ -18,7 +18,9 @@ func main(){
 	fmt.Println("Auth Svc on", cf.App.Port)
 	s3 := upload.NewS3Provider(cf)
 	hdl := https.NewUploadHandler(s3)
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer( grpc.MaxMsgSize(10485760),
+		grpc.MaxRecvMsgSize(10485760),
+		grpc.MaxSendMsgSize(10485760),)
 	pb.RegisterFileServiceServer(grpcServer, hdl)
 
 	if err := grpcServer.Serve(lis); err != nil {
