@@ -45,6 +45,7 @@ func NewS3Provider(cfg *config.Config) *s3Provider {
 	})
 
 	if err != nil {
+
 		log.Fatalln(err)
 	}
 

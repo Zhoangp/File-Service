@@ -8,11 +8,18 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"os"
 )
 func main(){
-	cf, err := config.LoadConfig("config/config-local.yml")
+	env := os.Getenv("ENV")
+	fileName := "config/config-local.yml"
+	if env == "app"{
+		fileName = "config/config-app.yml"
+	}
+
+	cf, err := config.LoadConfig(fileName)
 	if err != nil {
-		panic(err)
+		log.Fatalln("Failed at config", err)
 	}
 	lis, err := net.Listen("tcp", ":" + cf.App.Port)
 	fmt.Println("Auth Svc on", cf.App.Port)

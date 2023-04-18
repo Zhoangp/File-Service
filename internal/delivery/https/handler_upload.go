@@ -24,10 +24,12 @@ func (hdl *uploadHandler) UploadFile(ctx context.Context, rq *pb.UploadFileReque
 		)
 
 		if err != nil {
+			fmt.Println(err)
 			return &pb.UploadFileResponse{
 				Error: HandleError(err),
 			}, nil
 		}
+
 		return &pb.UploadFileResponse{
 			Url: url,
 		}, nil
