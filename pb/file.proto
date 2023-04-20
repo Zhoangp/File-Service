@@ -10,6 +10,7 @@ message UploadFileRequest {
   int64 size = 2;
   bytes content = 3;
   string folder = 4;
+  string oldUrl = 5;
 }
 message UploadFileResponse {
   string url = 1;

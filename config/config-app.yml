@@ -5,7 +5,7 @@ app:
   Secret: go-courses
 aws:
   Region: ap-northeast-1
-  APIKey: AKIAZINF6DDKUQ7MR6FY
-  SecretKey: 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
+  APIKey: AKIAZINF6DDK7IJ4HFXZ
+  SecretKey: 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
   S3Domain: https://d338hmodjsosv2.cloudfront.net
   S3Bucket: courses-storages

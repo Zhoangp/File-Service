@@ -11,10 +11,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type UploadProvider interface {
 	UploadFile(ctx context.Context, data []byte, dst string) (string, error)
+	DeleteFile(objectUrl string) error
 }
 
 type s3Provider struct {
@@ -53,11 +56,26 @@ func NewS3Provider(cfg *config.Config) *s3Provider {
 
 	return provider
 }
+func (p *s3Provider) DeleteFile(objectUrl string) error {
+	u, err := url.Parse(objectUrl)
+	if err != nil {
+		return err
+	}
+	objectKey := strings.TrimPrefix(u.Path, "/")
+	input := &s3.DeleteObjectInput{
+		Bucket: aws.String(p.bucket),
+		Key:    aws.String(objectKey),
+	}
 
+	_, err = s3.New(p.session).DeleteObject(input)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func (p *s3Provider) UploadFile(ctx context.Context, data []byte, dst string) (string, error) {
 	fileBytes := bytes.NewReader(data)
 	fileType := http.DetectContentType(data)
-
 	_, err := s3.New(p.session).PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(p.bucket),
 		Key:         aws.String(dst),

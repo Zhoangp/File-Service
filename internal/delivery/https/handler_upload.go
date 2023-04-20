@@ -17,22 +17,28 @@ func NewUploadHandler(s3Provider upload.UploadProvider) *uploadHandler {
 	return &uploadHandler{s3Provider: s3Provider}
 }
 func (hdl *uploadHandler) UploadFile(ctx context.Context, rq *pb.UploadFileRequest) (*pb.UploadFileResponse, error) {
-		url, err := hdl.s3Provider.UploadFile(
-			ctx,
-			rq.Content,
-			fmt.Sprintf("%s/%s", rq.Folder, rq.FileName),
-		)
-
-		if err != nil {
-			fmt.Println(err)
-			return &pb.UploadFileResponse{
-				Error: HandleError(err),
-			}, nil
-		}
-
+	if err := hdl.s3Provider.DeleteFile(rq.OldUrl); err != nil {
+		fmt.Println(err)
 		return &pb.UploadFileResponse{
-			Url: url,
+			Error: HandleError(err),
 		}, nil
+	}
+	url, err := hdl.s3Provider.UploadFile(
+		ctx,
+		rq.Content,
+		fmt.Sprintf("%s/%s", rq.Folder, rq.FileName),
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return &pb.UploadFileResponse{
+			Error: HandleError(err),
+		}, nil
+	}
+
+	return &pb.UploadFileResponse{
+		Url: url,
+	}, nil
 }
 
 func HandleError(err error) *pb.ErrorResponse {
