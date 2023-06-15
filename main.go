@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"github.com/Zhoangp/File-Service/config"
@@ -10,10 +11,11 @@ import (
 	"net"
 	"os"
 )
-func main(){
+
+func main() {
 	env := os.Getenv("ENV")
 	fileName := "config/config-local.yml"
-	if env == "app"{
+	if env == "app" {
 		fileName = "config/config-app.yml"
 	}
 
@@ -21,18 +23,24 @@ func main(){
 	if err != nil {
 		log.Fatalln("Failed at config", err)
 	}
-	lis, err := net.Listen("tcp", ":" + cf.App.Port)
+	apiKey := os.Getenv("API_KEY")
+	secretKey := os.Getenv("SECRET_KEY")
+	cf.AWS.APIKey = apiKey
+	cf.AWS.SecretKey = secretKey
+	fmt.Println(cf.AWS.APIKey)
+	fmt.Println(cf.AWS.SecretKey)
+
+	lis, err := net.Listen("tcp", ":"+cf.App.Port)
 	fmt.Println("Auth Svc on", cf.App.Port)
 	s3 := upload.NewS3Provider(cf)
-	hdl := https.NewUploadHandler(s3)
-	grpcServer := grpc.NewServer( grpc.MaxMsgSize(10485760),
+	hdl := https.NewUploadHandler(s3, cf)
+	grpcServer := grpc.NewServer(grpc.MaxMsgSize(10485760),
 		grpc.MaxRecvMsgSize(10485760),
-		grpc.MaxSendMsgSize(10485760),)
+		grpc.MaxSendMsgSize(10485760))
 	pb.RegisterFileServiceServer(grpcServer, hdl)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalln("Failed to serve:", err)
 	}
-
 
 }

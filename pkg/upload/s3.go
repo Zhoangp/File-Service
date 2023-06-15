@@ -85,6 +85,7 @@ func (p *s3Provider) UploadFile(ctx context.Context, data []byte, dst string) (s
 	})
 
 	if err != nil {
+		fmt.Println(err)
 		return "", err
 	}
 

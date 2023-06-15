@@ -5,8 +5,9 @@ import (
 )
 
 type Config struct {
-	AWS   AWSConfig
-	App AppConfig
+	AWS           AWSConfig
+	App           AppConfig
+	OtherServices OtherServicesConfig
 }
 
 type AppConfig struct {
@@ -21,6 +22,9 @@ type AWSConfig struct {
 	SecretKey string
 	S3Bucket  string
 	S3Domain  string
+}
+type OtherServicesConfig struct {
+	DurationVideo string
 }
 
 func LoadConfig(fileName string) (*Config, error) {
